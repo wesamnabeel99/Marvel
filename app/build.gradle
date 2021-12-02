@@ -8,6 +8,9 @@ plugins {
 android {
     compileSdk 31
 
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
     defaultConfig {
         applicationId "com.wesam.marvel"
         minSdk 21
@@ -16,6 +19,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "PUBLIC_API_KEY",localProperties['PublicApiKey']
+        buildConfigField "String", "PRIVATE_API_KEY",localProperties['PrivateApiKey']
+        buildConfigField "String", "BASE_API_URL", "\"https://gateway.marvel.com:443/v1/public\""
     }
 
     buildTypes {
@@ -30,6 +37,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures{
+        dataBinding true
     }
     kapt {
         arguments {
