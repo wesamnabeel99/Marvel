@@ -15,20 +15,29 @@
         tools:context=".ui.HomeFragment">
 
 
-        <TextView
-            android:layout_margin="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="24sp"/>
-
         <Button
+            android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{() -> viewModel.log()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:background="#00ff00"
+            app:showWhenSuccess="@{viewModel.testLiveData}"
+            app:items="@{viewModel.testLiveData.toData()}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_character" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

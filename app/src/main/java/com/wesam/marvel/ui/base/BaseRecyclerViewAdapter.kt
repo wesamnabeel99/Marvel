@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.wesam.marvel.BR
 
 interface BaseInteractionListener
 
@@ -40,8 +41,8 @@ abstract class BaseRecyclerAdapter<T>(
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
 
         if (holder is ItemViewHolder && items.isNotEmpty() ) {
-           // holder.binding.setVariable(BR.item, items[position])
-            //holder.binding.setVariable(BR.listener, listener)
+            holder.binding.setVariable(BR.item, items[position])
+            holder.binding.setVariable(BR.listener, listener)
         }
     }
 
