@@ -27,7 +27,6 @@ fun <T> View.handleSuccessState(state: State<T>?) = if (state is State.Success) 
 
 fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")
-    Log.i("WESAM",BigInteger(1, md.digest(this.toByteArray())).toString(16).padStart(32, '0'))
     return BigInteger(1, md.digest(this.toByteArray())).toString(16).padStart(32, '0')
 
 }

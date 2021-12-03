@@ -1,26 +1,33 @@
 package com.wesam.marvel.ui.home
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.wesam.marvel.model.domain.models.Character
+import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.State
-import com.wesam.marvel.model.network.response.base.BaseResponse
-import com.wesam.marvel.model.network.response.character.CharacterDto
 import com.wesam.marvel.model.repositories.MarvelRepositoryImpl
 import com.wesam.marvel.ui.base.BaseViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel : BaseViewModel() {
-    val testLiveData = MutableLiveData<State<BaseResponse<CharacterDto>?>>()
+    val testLiveData : LiveData<State<List<Character>?>> = MarvelRepositoryImpl.getCharacter().asLiveData(Dispatchers.IO)
 
-
-    fun update() {
+    init {
         viewModelScope.launch {
-           MarvelRepositoryImpl.getCharacter().collect {
-               Log.i("TEST", it.toData()?.data?.results?.get(0)?.name.toString())
-                testLiveData.postValue(it)
+            MarvelRepositoryImpl.refreshCharacters()
+        }
+    }
+
+    fun log() {
+        viewModelScope.launch {
+            testLiveData.asFlow().collect {
+                if(it is State.Success) {
+                    Log.i("TEST", it.toData()?.get(0)?.name.toString())
+                }
             }
         }
+
     }
 }
