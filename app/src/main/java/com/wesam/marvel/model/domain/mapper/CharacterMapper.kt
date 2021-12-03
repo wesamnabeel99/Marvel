@@ -1,12 +1,18 @@
 package com.wesam.marvel.model.domain.mapper
 
 import com.wesam.marvel.model.domain.models.Character
+import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.response.character.CharacterDto
 import com.wesam.marvel.model.network.response.character.toCharacter
+import com.wesam.marvel.model.network.response.character.toCharacterEntitity
 
-class CharacterMapper: Mapper<CharacterDto,Character> {
-    override fun map(input: CharacterDto): Character {
+class CharacterMapper: Mapper<CharacterDto,Character,CharacterEntity> {
+    override fun mapToDomain(input: CharacterDto): Character {
         return input.toCharacter()
+    }
+
+    override fun mapToEntitiy(input: CharacterDto): CharacterEntity {
+        return input.toCharacterEntitity()
     }
 
 }

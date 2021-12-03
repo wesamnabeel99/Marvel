@@ -16,13 +16,13 @@ object MarvelRepositoryImpl : MarvelRepository {
     private val mapper = CharacterMapper()
 
     override suspend fun refreshCharacters() {
-//        val response = apiService.getCharacters()
-//        val items = response.body()?.data?.results
-//        items?.let {
-//            characterDao.insertCharacter(it.map {
-//                mapper.map(it.toCharacterEntitity())
-//            })
-//        }
+        val response = apiService.getCharacters()
+        val items = response.body()?.data?.results
+        items?.let {
+            characterDao.insertCharacter(it.map { dao->
+                mapper.mapToEntitiy(dao)
+            })
+        }
 
 
     }
@@ -33,7 +33,7 @@ object MarvelRepositoryImpl : MarvelRepository {
             try {
                 val characters =
                     apiService.getCharacters().body()?.data?.results?.map { characterDto ->
-                        mapper.map(characterDto)
+                        mapper.mapToDomain(characterDto)
                     }
                 emit(State.Success(characters))
             } catch (throwable: Throwable) {
