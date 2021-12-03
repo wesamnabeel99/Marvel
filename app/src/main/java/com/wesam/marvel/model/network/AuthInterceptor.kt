@@ -15,7 +15,6 @@ class AuthInterceptor : Interceptor {
         val hash = "${timeStamp}${privateApiKey}${publicApiKey}".md5()
 
         with(chain.request()) {
-
             url.newBuilder().apply {
                 addQueryParameter(API_KEY_PARAM, publicApiKey)
                 addQueryParameter(TIME_STAMP_PARAM, timeStamp)

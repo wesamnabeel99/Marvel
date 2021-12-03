@@ -4,6 +4,7 @@ import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,7 +12,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 object Api {
     private const val baseUrl = "https://gateway.marvel.com/"
 
-    private val client = OkHttpClient.Builder().addInterceptor(AuthInterceptor()).build()
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
+        .addInterceptor(loggingInterceptor)
+        .build()
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
