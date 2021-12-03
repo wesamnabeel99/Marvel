@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel : BaseViewModel(),HomeInteractionListener {
-    val testLiveData : LiveData<State<List<Character>?>> = MarvelRepositoryImpl.getCharacter().asLiveData(Dispatchers.IO)
+    val testLiveData : LiveData<List<Character>?> = MarvelRepositoryImpl.getCharacter().asLiveData(Dispatchers.IO)
 
     init {
         viewModelScope.launch {
@@ -23,12 +23,10 @@ class HomeViewModel : BaseViewModel(),HomeInteractionListener {
     fun log() {
         viewModelScope.launch {
             testLiveData.asFlow().collect {
-                if(it is State.Loading) {
                     Log.i("TEST", "Loading...")
-                }
-                if(it is State.Success) {
-                    Log.i("TEST", it.toData()?.get(1)?.name.toString())
-                }
+
+                    Log.i("TEST", it?.get(1)?.name.toString())
+
             }
         }
 

@@ -9,7 +9,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,HomeViewModel>() {
     override val viewModelClass = HomeViewModel::class.java
     override fun onStart() {
         super.onStart()
-        binding.recycler.adapter = HomeRecyclerAdapter(viewModel.testLiveData.value?.toData() ?: emptyList()
+        binding.recycler.adapter = HomeRecyclerAdapter(viewModel.testLiveData.value ?: emptyList()
         ,viewModel
         )
     }

@@ -8,9 +8,7 @@ import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.Api
 import com.wesam.marvel.model.network.State
 import com.wesam.marvel.model.network.response.character.toCharacterEntitity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 object MarvelRepositoryImpl : MarvelRepository {
     private val apiService = Api.apiService
@@ -29,21 +27,8 @@ object MarvelRepositoryImpl : MarvelRepository {
 
     }
 
-    override fun getCharacter(): Flow<State<List<Character>?>> {
-        return flow {
-            emit(State.Loading)
-            try {
-                val characters =
-                    apiService.getCharacters().body()?.data?.results?.map { characterDto ->
-                        mapper.mapToDomain(characterDto)
-                    }
-                Log.i("TEST", "got em!")
-                emit(State.Success(characters))
-            } catch (throwable: Throwable) {
-                Log.i("TEST", "exception ${throwable.message}")
-                emit(State.Error(throwable.message.toString()))
-            }
-
-        }
+    override fun getCharacter(): Flow<List<Character>?> {
+        return characterDao.getCharacter()
     }
+
 }
