@@ -30,19 +30,3 @@ data class CharacterDto(
     val urls: List<Url>? = null
 )
 
-fun CharacterDto.toCharacter() : Character {
-    return Character(
-        name = this.name,
-        id = this.id,
-        imageUrl = "${this.thumbnail?.path}.${this.thumbnail?.extension}"
-    )
-}
-
-fun CharacterDto.toCharacterEntitity() : CharacterEntity {
-    return CharacterEntity(
-        id = this.id!!,
-        name = this.name!!,
-        description = this.description!!,
-        imageUrl = "${this.thumbnail?.path}.${this.thumbnail?.extension}"
-    )
-}

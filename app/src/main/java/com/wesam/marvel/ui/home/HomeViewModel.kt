@@ -11,23 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class HomeViewModel : BaseViewModel(),HomeInteractionListener {
-    val testLiveData : LiveData<List<Character>?> = MarvelRepositoryImpl.getCharacter().asLiveData(Dispatchers.IO)
+class HomeViewModel : BaseViewModel(), HomeInteractionListener {
+    val testLiveData: LiveData<List<Character>?> =
+        MarvelRepositoryImpl.getCharacter().asLiveData(Dispatchers.IO)
 
     init {
-        viewModelScope.launch {
-            MarvelRepositoryImpl.refreshCharacters()
-        }
+        refreshData()
     }
 
-    fun log() {
+    fun refreshData() {
         viewModelScope.launch {
-            testLiveData.asFlow().collect {
-                    Log.i("TEST", "Loading...")
-
-                    Log.i("TEST", it?.get(1)?.name.toString())
-
-            }
+            MarvelRepositoryImpl.refreshCharacters()
         }
 
     }

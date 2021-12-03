@@ -2,7 +2,10 @@ package com.wesam.marvel.utils
 
 import android.util.Log
 import android.view.View
+import com.wesam.marvel.model.domain.models.Character
+import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.State
+import com.wesam.marvel.model.network.response.character.CharacterDto
 import java.math.BigInteger
 import java.security.MessageDigest
 
@@ -28,5 +31,21 @@ fun <T> View.handleSuccessState(state: State<T>?) = if (state is State.Success) 
 fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")
     return BigInteger(1, md.digest(this.toByteArray())).toString(16).padStart(32, '0')
+}
 
+fun CharacterDto.toCharacter() : Character {
+    return Character(
+        name = this.name,
+        id = this.id,
+        imageUrl = "${this.thumbnail?.path}.${this.thumbnail?.extension}"
+    )
+}
+
+fun CharacterDto.toCharacterEntitity() : CharacterEntity {
+    return CharacterEntity(
+        id = this.id!!,
+        name = this.name!!,
+        description = this.description!!,
+        imageUrl = "${this.thumbnail?.path}.${this.thumbnail?.extension}"
+    )
 }
