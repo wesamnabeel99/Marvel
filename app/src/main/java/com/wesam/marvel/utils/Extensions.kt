@@ -33,19 +33,3 @@ fun String.md5(): String {
     return BigInteger(1, md.digest(this.toByteArray())).toString(16).padStart(32, '0')
 }
 
-fun CharacterDto.toCharacter() : Character {
-    return Character(
-        name = this.name,
-        id = this.id,
-        imageUrl = "${this.thumbnail?.path}.${this.thumbnail?.extension}"
-    )
-}
-
-fun CharacterDto.toCharacterEntitity() : CharacterEntity {
-    return CharacterEntity(
-        id = this.id!!,
-        name = this.name!!,
-        description = this.description!!,
-        imageUrl = "${this.thumbnail?.path}.${this.thumbnail?.extension}"
-    )
-}

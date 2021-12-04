@@ -1,6 +1,7 @@
 package com.wesam.marvel.model.domain.mapper
 
-interface Mapper <I,O,O2> {
-    fun mapToDomain(input: I) : O
-    fun mapToEntitiy(input: I):O2
+interface Mapper <DTO,ENTITY,DOMAIN> {
+    fun mapDtoToDomain(input: DTO) : DOMAIN
+    fun mapDtoToEntity(input: DTO):ENTITY
+    fun mapEntityToDomain(input:ENTITY) : DOMAIN
 }

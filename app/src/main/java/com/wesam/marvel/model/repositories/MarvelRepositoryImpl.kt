@@ -4,10 +4,9 @@ import android.util.Log
 import com.wesam.marvel.model.domain.mapper.CharacterMapper
 import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.local.database.MarvelDatabase
-import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.Api
+import com.wesam.marvel.model.network.Api.apiService
 import com.wesam.marvel.model.network.State
-import com.wesam.marvel.model.network.response.character.toCharacterEntitity
 import kotlinx.coroutines.flow.*
 
 object MarvelRepositoryImpl : MarvelRepository {
@@ -15,20 +14,31 @@ object MarvelRepositoryImpl : MarvelRepository {
     private val characterDao = MarvelDatabase.getInstanceWithoutContext().marvelDao()
     private val mapper = CharacterMapper()
 
-    override suspend fun refreshCharacters() {
-        val response = apiService.getCharacters()
-        val items = response.body()?.data?.results?.map {
-            mapper.mapToEntitiy(it)
+    override suspend fun getCharacters(): List<Character> {
+        return characterDao.getCharacter().map {
+            mapper.mapEntityToDomain(it)
         }
-
-        items?.let {
-            characterDao.insertCharacter(it)
-        }
-
     }
 
-    override fun getCharacter(): Flow<List<Character>?> {
-        return characterDao.getCharacter()
+
+    override suspend fun refreshCharacters() {
+        try {
+            Log.i("TEST", "make request")
+
+            val character = apiService.getCharacters()
+                .body()?.data?.results?.map {
+                    Log.i("TEST", "i'm mapping $it")
+                    mapper.mapDtoToEntity(it)
+                }
+
+            character?.let {
+                Log.i("TEST", "inserting $it into database")
+                characterDao.insertCharacter(it)
+            }
+        } catch (throwable: Throwable) {
+
+        }
+
     }
 
 }
