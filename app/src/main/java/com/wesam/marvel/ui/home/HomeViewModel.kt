@@ -12,7 +12,7 @@ class HomeViewModel : BaseViewModel(), HomeInteractionListener {
     init {
         viewModelScope.launch {
             getData()
-            if(testLiveData.value?.isNullOrEmpty() == null) {
+            if (testLiveData.value == null) {
                 MarvelRepositoryImpl.refreshCharacters()
                 getData()
             }
