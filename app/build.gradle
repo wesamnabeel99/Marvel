@@ -46,7 +46,15 @@ android {
         arguments {
             arg("room.schemaLocation","$projectDir/schemas")
         }
+        javacOptions {
+            // These options are normally set automatically via the Hilt Gradle plugin, but we
+            // set them manually to workaround a bug in the Kotlin 1.5.20
+            option("-Adagger.fastInit=ENABLED")
+            option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+        }
     }
+
+
 }
 
 dependencies {
@@ -97,17 +105,17 @@ dependencies {
     implementation('com.airbnb.android:lottie:4.2.0')
 
     //Hilt
-    def hilt_version = "2.40"
+    def hilt_version = "2.40.4"
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    annotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // For instrumentation tests
     androidTestImplementation  "com.google.dagger:hilt-android-testing:$hilt_version"
-    androidTestAnnotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
 
     // For local unit tests
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    testAnnotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
+    kaptTest "com.google.dagger:hilt-compiler:$hilt_version"
 
 
 }

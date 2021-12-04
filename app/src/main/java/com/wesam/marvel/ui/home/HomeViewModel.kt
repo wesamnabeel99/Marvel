@@ -1,7 +1,6 @@
 package com.wesam.marvel.ui.home
 
 import androidx.lifecycle.*
-import com.wesam.marvel.di.DependencyContainer
 import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.repositories.MarvelRepositoryImpl
 import com.wesam.marvel.ui.base.BaseViewModel
@@ -11,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: MarvelRepositoryImpl = DependencyContainer().repository
+    private val repository: MarvelRepositoryImpl
 ) : BaseViewModel(),
     HomeInteractionListener {
     val testLiveData = MutableLiveData<List<Character>>()
