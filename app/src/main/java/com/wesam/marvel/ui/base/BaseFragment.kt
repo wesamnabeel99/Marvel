@@ -10,10 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wesam.marvel.BR
+import com.wesam.marvel.ui.MarvelViewModelFactory
 
 abstract class BaseFragment <VDB: ViewDataBinding , VM : ViewModel> : Fragment() {
-
-    open val useActivityViewModel: Boolean = true
 
     abstract val layoutId: Int
     lateinit var viewModel: VM
@@ -27,6 +26,7 @@ abstract class BaseFragment <VDB: ViewDataBinding , VM : ViewModel> : Fragment()
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ) : View? {
+        MarvelViewModelFactory.listOfViewModels.add(viewModelClass)
         initViewModel()
         _binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         _binding.apply {
@@ -37,11 +37,7 @@ abstract class BaseFragment <VDB: ViewDataBinding , VM : ViewModel> : Fragment()
     }
 
     private fun initViewModel() {
-        viewModel = if (useActivityViewModel) {
-            ViewModelProvider(requireActivity())[viewModelClass]
-        } else {
-            ViewModelProvider(this)[viewModelClass]
-        }
+        viewModel = ViewModelProvider(requireActivity(),MarvelViewModelFactory())[viewModelClass]
     }
 
 }

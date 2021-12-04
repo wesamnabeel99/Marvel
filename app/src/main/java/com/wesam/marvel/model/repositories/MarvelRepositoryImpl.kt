@@ -2,13 +2,14 @@ package com.wesam.marvel.model.repositories
 
 import com.wesam.marvel.model.domain.mapper.CharacterMapper
 import com.wesam.marvel.model.domain.models.Character
-import com.wesam.marvel.model.local.database.MarvelDatabase
-import com.wesam.marvel.model.network.Api
+import com.wesam.marvel.model.local.database.MarvelDao
+import com.wesam.marvel.model.network.MarvelService
 
-object MarvelRepositoryImpl : MarvelRepository {
-    private val apiService = Api.apiService
-    private val characterDao = MarvelDatabase.getInstanceWithoutContext().marvelDao()
-    private val mapper = CharacterMapper()
+class MarvelRepositoryImpl(
+    private val apiService: MarvelService,
+    private val mapper: CharacterMapper,
+    private val characterDao: MarvelDao,
+) : MarvelRepository {
 
     override suspend fun getCharacters(): List<Character> {
         return characterDao.getCharacter().map {
