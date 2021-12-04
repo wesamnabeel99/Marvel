@@ -4,8 +4,9 @@ import com.wesam.marvel.model.domain.mapper.CharacterMapper
 import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.local.database.MarvelDao
 import com.wesam.marvel.model.network.MarvelService
+import javax.inject.Inject
 
-class MarvelRepositoryImpl(
+class MarvelRepositoryImpl @Inject constructor(
     private val apiService: MarvelService,
     private val mapper: CharacterMapper,
     private val characterDao: MarvelDao,

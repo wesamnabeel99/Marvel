@@ -5,9 +5,12 @@ import com.wesam.marvel.di.DependencyContainer
 import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.repositories.MarvelRepositoryImpl
 import com.wesam.marvel.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val repository: MarvelRepositoryImpl = DependencyContainer().repository
 ) : BaseViewModel(),
     HomeInteractionListener {
