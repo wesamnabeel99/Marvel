@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.repositories.MarvelRepositoryImpl
 import com.wesam.marvel.ui.base.BaseViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel : BaseViewModel(), HomeInteractionListener {
@@ -13,7 +12,7 @@ class HomeViewModel : BaseViewModel(), HomeInteractionListener {
     init {
         viewModelScope.launch {
             getData()
-            if(testLiveData.value?.isEmpty() == true) {
+            if(testLiveData.value?.isNullOrEmpty() == null) {
                 MarvelRepositoryImpl.refreshCharacters()
                 getData()
             }
