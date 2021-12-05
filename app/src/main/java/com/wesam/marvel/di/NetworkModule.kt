@@ -35,7 +35,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideGsonConvertorFactory() = GsonConverterFactory.create()
+    fun provideGsonConvertorFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
     @Provides
     fun provideOkHttpClient(
