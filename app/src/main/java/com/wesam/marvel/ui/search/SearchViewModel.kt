@@ -27,7 +27,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             repository.searchForCharacterByNameInDatabase(name).collect { list ->
                 if (list.isEmpty()) {
-                    val result = repository.searchForCharacter(name)
+                    repository.searchForCharacter(name)
                     repository.searchForCharacterByNameInDatabase(name).collect {
                         testLiveData.postValue(it)
                     }
@@ -41,7 +41,6 @@ class SearchViewModel @Inject constructor(
         }
 
     }
-
 
 
     override fun onCharacterClicked() {

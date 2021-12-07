@@ -15,6 +15,9 @@ class HomeRecyclerAdapter(
         newItemPosition: Int,
         newItems: List<T>
     ): Boolean {
-    return false
+    return newItems[oldItemPosition] != newItems[newItemPosition]
     }
 }
+
+
+
