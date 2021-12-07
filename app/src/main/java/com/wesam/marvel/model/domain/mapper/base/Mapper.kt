@@ -21,10 +21,10 @@ class Mapper @Inject constructor(
 
     fun <I, DOMAIN> mapToDomain(
         list: List<I>,
-        function: (input: I) -> DOMAIN
+        mapFunction: (input: I) -> DOMAIN
     ): List<DOMAIN> {
         return list.map {
-            function(it)
+            mapFunction(it)
         }
     }
 

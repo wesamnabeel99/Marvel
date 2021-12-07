@@ -8,7 +8,7 @@ import com.wesam.marvel.model.network.response.character.CharacterDto
 import kotlinx.coroutines.flow.Flow
 
 interface MarvelRepository {
-    fun searchForCharacter(name: String): Flow<List<CharacterEntity>?>
+    fun searchForCharacter(name: String): Flow<List<Character?>>
 
 
 }

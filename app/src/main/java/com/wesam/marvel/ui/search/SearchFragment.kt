@@ -14,7 +14,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recycler.adapter = HomeRecyclerAdapter(
-            viewModel.testLiveData.value ?: emptyList(), viewModel
+            viewModel.testLiveData.value?.toData() ?: emptyList(), viewModel
         )
         binding.button.setOnClickListener {
             viewModel.getData(name = binding.editText.text.toString())

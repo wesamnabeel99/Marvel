@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wesam.marvel.model.domain.models.Character
+import com.wesam.marvel.model.network.State
 import com.wesam.marvel.model.repositories.MarvelRepository
 import com.wesam.marvel.ui.base.BaseViewModel
 import com.wesam.marvel.ui.home.HomeInteractionListener
@@ -19,14 +20,14 @@ class SearchViewModel @Inject constructor(
     private val repository: MarvelRepository
 ) : BaseViewModel(),
     HomeInteractionListener {
-    val testLiveData = MutableLiveData<List<Character>?>()
+    val testLiveData = MutableLiveData<State<List<Character>>?>()
     val searchText = MutableLiveData<String>()
 
 
     fun getData(name: String) {
         viewModelScope.launch {
             repository.searchForCharacter(name).collect {
-                Log.i("TEST",it.toString())
+            testLiveData.postValue(it)
             }
         }
     }

@@ -27,6 +27,7 @@ object StateHandler {
             }
         }
     }
+
     private fun <T> checkResponseBody(response: Response<T>) = response.body().toString() == ""
 
 }
