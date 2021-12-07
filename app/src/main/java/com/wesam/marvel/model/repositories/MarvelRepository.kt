@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 interface MarvelRepository {
     suspend fun getCharacters(): List<Character>
     suspend fun refreshCharacters()
+    suspend fun searchForCharacter(name: String)
+    suspend fun getResultsFromDatabase() :List<Character>
 
 
 }

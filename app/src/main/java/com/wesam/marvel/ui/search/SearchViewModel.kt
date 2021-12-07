@@ -16,20 +16,13 @@ class SearchViewModel @Inject constructor(
 ) : BaseViewModel(),
     HomeInteractionListener {
     val testLiveData = MutableLiveData<List<Character>>()
+    val searchText = MutableLiveData<String>()
 
-    init {
-        viewModelScope.launch {
-            getData()
-            if (testLiveData.value == null) {
-                repository.refreshCharacters()
-                getData()
-            }
-        }
-    }
 
-    fun getData() {
+    fun getData(name: String) {
         viewModelScope.launch {
-            testLiveData.postValue(repository.getCharacters())
+            repository.searchForCharacter(name)
+            testLiveData.postValue(repository.getResultsFromDatabase())
         }
 
     }
@@ -37,5 +30,6 @@ class SearchViewModel @Inject constructor(
     override fun onCharacterClicked() {
 
     }
+
 
 }

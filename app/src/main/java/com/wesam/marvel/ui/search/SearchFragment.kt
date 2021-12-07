@@ -16,5 +16,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         binding.recycler.adapter = HomeRecyclerAdapter(
             viewModel.testLiveData.value ?: emptyList(), viewModel
         )
+        binding.button.setOnClickListener {
+            viewModel.getData(name = binding.editText.text.toString())
+        }
     }
 }

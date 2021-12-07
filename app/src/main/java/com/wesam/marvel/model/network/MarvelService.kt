@@ -4,8 +4,14 @@ import com.wesam.marvel.model.network.response.base.BaseResponse
 import com.wesam.marvel.model.network.response.character.CharacterDto
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface MarvelService {
     @GET("characters")
-    suspend fun getCharacters() : Response<BaseResponse<CharacterDto>?>
+    suspend fun getCharacters(): Response<BaseResponse<CharacterDto>?>
+
+    @GET("characters")
+    suspend fun searchForCharacter(
+        @Query("name", encoded = false) characterName: String
+    ): Response<BaseResponse<CharacterDto>?>
 }
