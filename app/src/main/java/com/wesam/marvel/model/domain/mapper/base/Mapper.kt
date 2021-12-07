@@ -9,4 +9,22 @@ class Mapper @Inject constructor(
     val characterDtoTODomain: CharacterDtoToDomain,
     val characterDtoToEntity: CharacterDtoToEntity,
     val characterEntityToDomain: CharacterEntityToDomain
-)
+) {
+    fun <I, ENTITY> mapToEntity(
+        list: List<I>,
+        function: (input: I) -> ENTITY
+    ): List<ENTITY> {
+        return list.map {
+            function(it)
+        }
+    }
+
+    fun <I, DOMAIN> mapToDomain(
+        list: List<I>,
+        function: (input: I) -> DOMAIN
+    ): List<DOMAIN> {
+        return list.map {
+            function(it)
+        }
+    }
+}

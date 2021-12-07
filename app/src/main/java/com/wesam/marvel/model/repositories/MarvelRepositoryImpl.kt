@@ -6,11 +6,10 @@ import com.wesam.marvel.model.local.database.MarvelDao
 import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.MarvelService
 import com.wesam.marvel.model.network.State
-import com.wesam.marvel.model.network.response.character.CharacterDto
+import com.wesam.marvel.model.network.StateHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import retrofit2.Response
 import javax.inject.Inject
 
 class MarvelRepositoryImpl @Inject constructor(
@@ -19,46 +18,35 @@ class MarvelRepositoryImpl @Inject constructor(
     private val characterDao: MarvelDao,
 ) : MarvelRepository {
 
-    override suspend fun searchForCharacter(name: String): Flow<List<CharacterEntity>?> {
+    override fun searchForCharacter(name: String): Flow<List<CharacterEntity>?> {
         return flow {
-            handleResponse { apiService.searchForCharacter(name) }.collect { state ->
-                Log.i("TEST","I'm here")
-                if (state is State.Success) {
-                    Log.i("TEST","successful request for $name")
-                    val entity = state.toData()?.data?.results?.let { dtoList ->
-                        Log.i("TEST","mapping $dtoList")
+            StateHandler.handleResponseState { apiService.searchForCharacter(name) }
+                .collect { state ->
+                    if (state is State.Success) {
+                        val response = state.toData()?.data?.results
 
-                        mapToEntity(
-                            list = dtoList
-                        ) {
-                            mapper.characterDtoToEntity.map(it)
+                        val entity = response?.let { dtoList ->
+                            mapper.mapToEntity(list = dtoList) {
+                                mapper.characterDtoToEntity.map(it)
+                            }
                         }
 
-                    }
 
-
-                    entity?.let { e ->
-                        cacheEntity(e) {
-                            characterDao.insertCharacter(e)
+                        entity?.let { entityList ->
+                            cacheEntity(entityList) {
+                                characterDao.insertCharacter(entityList)
+                            }
                         }
-                        Log.i("TEST","cached $e")
+                    } else {
+                        if (state !is State.Loading) {
+                            Log.i("TEST", "not successful")
 
+                        }
                     }
-                } else {
-                    Log.i("TEST","not successful")
                 }
-            }
         }
     }
 
-    private fun <I, ENTITY> mapToEntity(
-        list: List<I>,
-        function: (input: I) -> ENTITY
-    ): List<ENTITY> {
-        return list.map {
-            function(it)
-        }
-    }
 
     private suspend fun <T> cacheEntity(
         entity: List<T>,
@@ -67,29 +55,5 @@ class MarvelRepositoryImpl @Inject constructor(
         insertEntity(entity)
     }
 
-
-    private suspend fun <T> handleResponse(function: suspend () -> Response<T>): Flow<State<T>> {
-        return flow {
-            try {
-                val response = function()
-                if (response.isSuccessful) {
-                    val isResponseEmpty = checkResponseBody(response)
-                    if (isResponseEmpty) {
-                        emit(State.Error("EMPTY JSON DUE TO BUG IN API"))
-                        handleResponse(function)
-                    } else {
-                        emit(State.Success(response.body()!!))
-                    }
-                } else {
-                    emit(State.Error(response.message()))
-                }
-
-            } catch (e: Exception) {
-                emit(State.Error(e.message.toString()))
-            }
-        }
-    }
-
-    private fun <T> checkResponseBody(response: Response<T>) = response.body().toString() == ""
 
 }
