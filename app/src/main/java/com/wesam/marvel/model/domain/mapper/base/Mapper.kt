@@ -27,4 +27,15 @@ class Mapper @Inject constructor(
             function(it)
         }
     }
+
+    fun <DTO, ENTITY> mapResponseToEntity(
+        response: List<DTO>?,
+        mappingFunction: (input: DTO) -> ENTITY
+    ): List<ENTITY>? {
+        return response?.let { dtoList ->
+            mapToEntity(list = dtoList) {
+                mappingFunction(it)
+            }
+        }
+    }
 }

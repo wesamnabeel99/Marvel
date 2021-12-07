@@ -25,18 +25,17 @@ class MarvelRepositoryImpl @Inject constructor(
                     if (state is State.Success) {
                         val response = state.toData()?.data?.results
 
-                        val entity = response?.let { dtoList ->
-                            mapper.mapToEntity(list = dtoList) {
-                                mapper.characterDtoToEntity.map(it)
-                            }
+                        val entity = mapper.mapResponseToEntity(response) { dto ->
+                            mapper.characterDtoToEntity.map(dto)
                         }
 
-
-                        entity?.let { entityList ->
-                            cacheEntity(entityList) {
+                        insertEntityIntoDatabase(entity) {
+                            entity?.let { entityList ->
                                 characterDao.insertCharacter(entityList)
                             }
                         }
+
+
                     } else {
                         if (state !is State.Loading) {
                             Log.i("TEST", "not successful")
@@ -48,12 +47,21 @@ class MarvelRepositoryImpl @Inject constructor(
     }
 
 
-    private suspend fun <T> cacheEntity(
-        entity: List<T>,
-        insertEntity: suspend (c: List<T>) -> Unit
+    private suspend fun <ENTITY> insertEntityIntoDatabase(
+        entity: List<ENTITY>?,
+        daoInsertFunction: suspend (entity: List<ENTITY?>) -> Unit,
+    ) {
+        entity?.let { entityList ->
+            cacheEntity(entityList) {
+                daoInsertFunction(entityList)
+            }
+        }
+    }
+
+    private suspend fun <ENTITY> cacheEntity(
+        entity: List<ENTITY>,
+        insertEntity: suspend (entityList: List<ENTITY>) -> Unit
     ) {
         insertEntity(entity)
     }
-
-
 }
