@@ -1,11 +1,11 @@
 package com.wesam.marvel.utils
 
-import android.util.Log
 import android.view.View
-import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.State
 import com.wesam.marvel.model.network.response.character.CharacterDto
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import java.math.BigInteger
 import java.security.MessageDigest
 

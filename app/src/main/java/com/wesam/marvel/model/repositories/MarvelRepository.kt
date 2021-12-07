@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MarvelRepository {
     suspend fun searchForCharacter(name: String): Flow<State<List<Character>?>>
-     suspend fun <ENTITY> insertEntityIntoDatabase(
+    suspend fun <ENTITY> insertEntityIntoDatabase(
         entity: List<ENTITY>?,
         daoInsertFunction: suspend (List<ENTITY?>) -> Unit,
     )
