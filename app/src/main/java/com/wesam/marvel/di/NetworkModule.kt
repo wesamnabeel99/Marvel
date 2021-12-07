@@ -1,11 +1,8 @@
 package com.wesam.marvel.di
 
 import com.wesam.marvel.BuildConfig
-import com.wesam.marvel.model.domain.mapper.CharacterMapper
-import com.wesam.marvel.model.local.database.MarvelDatabase
 import com.wesam.marvel.model.network.AuthInterceptor
 import com.wesam.marvel.model.network.MarvelService
-import com.wesam.marvel.model.repositories.MarvelRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
