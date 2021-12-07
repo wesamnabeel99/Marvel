@@ -8,8 +8,8 @@ import com.wesam.marvel.model.network.response.character.CharacterDto
 import kotlinx.coroutines.flow.Flow
 
 interface MarvelRepository {
-    fun searchForCharacterByNameInDatabase(name: String): Flow<List<Character>>
     suspend fun searchForCharacter(name: String)
+    fun searchForCharacterByNameInDatabase(name: String): Flow<List<Character>>
 
 
 }

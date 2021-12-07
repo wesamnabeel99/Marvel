@@ -15,23 +15,15 @@ class MarvelRepositoryImpl @Inject constructor(
     private val characterDao: MarvelDao,
 ) : MarvelRepository {
 
-    override fun searchForCharacterByNameInDatabase(name: String): Flow<List<Character>> {
-        return flow {
-            characterDao.searchForCharacterByNameInDatabase(name).collect { list ->
-                val domain = list.map { entity ->
-                    mapper.characterEntityToDomain.map(entity)
-                }
-                emit(domain)
-            }
-        }
-    }
-
-
     override suspend fun searchForCharacter(name: String) {
         try {
-            val response = apiService.searchForCharacter(name).body()?.data?.results
+            val responseBody = apiService.searchForCharacter(name).body()
 
-            val entities = response?.map { dto ->
+            //7 December 2021 - a bug in the api, sometimes it returns empty json, make request again to handle this bug
+            if (responseBody.toString() == "") {
+                searchForCharacter(name)
+            }
+            val entities = responseBody?.data?.results?.map { dto ->
                 mapper.characterDtoToEntity.map(dto)
             }
 
@@ -41,7 +33,17 @@ class MarvelRepositoryImpl @Inject constructor(
         } catch (throwable: Throwable) {
 
         }
+    }
 
+    override fun searchForCharacterByNameInDatabase(name: String): Flow<List<Character>> {
+        return flow {
+            characterDao.searchForCharacterByNameInDatabase(name).collect { list ->
+                val domain = list.map { entity ->
+                    mapper.characterEntityToDomain.map(entity)
+                }
+                emit(domain)
+            }
+        }
     }
 
 
