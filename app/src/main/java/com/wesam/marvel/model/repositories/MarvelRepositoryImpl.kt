@@ -3,10 +3,9 @@ package com.wesam.marvel.model.repositories
 import com.wesam.marvel.model.domain.mapper.base.Mapper
 import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.local.database.MarvelDao
+import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.MarvelService
 import com.wesam.marvel.model.network.State
-import com.wesam.marvel.model.network.StateHandler
-import com.wesam.marvel.model.network.response.character.CharacterDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -18,87 +17,51 @@ class MarvelRepositoryImpl @Inject constructor(
     private val characterDao: MarvelDao,
 ) : MarvelRepository {
 
-    override fun searchForCharacter(name: String): Flow<List<Character?>> {
+    override suspend fun searchForCharacter(
+        name: String,
+    ): Flow<State<List<Character>?>> {
         return flow {
-            StateHandler.handleResponseState { apiService.searchForCharacter(name) }
-                .collect { state ->
-                    when (state) {
-                        is State.Success -> {
-
-                            val response = state.toData()?.data?.results
-
-                            val entity = mapper.mapResponseToEntity(response) { dto ->
+            StateHandler.handleRequestState { apiService.searchForCharacter(name) }.collect {
+                if (it is State.Success) {
+                    val entity: List<CharacterEntity>? =
+                        it.toData()?.data?.results?.let { list ->
+                            mapper.mapToEntity(list) { dto ->
                                 mapper.characterDtoToEntity.map(dto)
                             }
-
-                            insertEntityIntoDatabase(entity) {
-                                entity?.let {
-                                    characterDao.insertCharacter(it)
-                                }
-                            }
-
-                            characterDao.searchForCharacterByNameInDatabase(name).collect { list ->
-                                emit(
-                                    mapper.mapToDomain(list) {
-                                        mapper.characterEntityToDomain.map(it)
-                                    }
-                                )
-                            }
-
                         }
 
-                        is State.Error -> {
-                        }
-
-                        else -> {
-                        }
-
+                    entity?.let {
+                        insertEntityIntoDatabase(
+                            entity
+                        ) { characterDao.insertCharacter(entity) }
                     }
+
+                    val domain = entity?.let { list ->
+                        mapper.mapToDomain(list) {
+                            mapper.characterEntityToDomain.map(it)
+                        }
+                    }
+                    emit(State.Success(domain))
+                } else if (it is State.Error) {
+                    emit(State.Error(it.toString()))
+                } else {
+                    emit(State.Loading)
                 }
+            }
+
+
         }
     }
 
 
-
-
-    private suspend fun handleSuccessState(response : List<CharacterDto>,name:String): Flow<List<Character>> {
-
-        return flow {
-            val entity = mapper.mapResponseToEntity(response) { dto ->
-                mapper.characterDtoToEntity.map(dto)
-            }
-
-            insertEntityIntoDatabase(entity) {
-                entity?.let {
-                    characterDao.insertCharacter(it)
-                }
-            }
-
-            characterDao.searchForCharacterByNameInDatabase(name).collect { list ->
-                emit(
-                    mapper.mapToDomain(list) {
-                        mapper.characterEntityToDomain.map(it)
-                    }
-                )
-            }
-        }
-    }
-
-    private suspend fun <ENTITY> insertEntityIntoDatabase(
+    override suspend fun <ENTITY> insertEntityIntoDatabase(
         entity: List<ENTITY>?,
-        daoInsertFunction: suspend (entity: List<ENTITY?>) -> Unit,
+        daoInsertFunction: suspend (List<ENTITY?>) -> Unit,
     ) {
+
         entity?.let { entityList ->
-            cacheEntity(entityList) {
-                daoInsertFunction(entityList)
-            }
+            daoInsertFunction(entityList)
         }
     }
 
-    private suspend fun <ENTITY> cacheEntity(
-        entity: List<ENTITY>,
-        insertEntity: suspend (entityList: List<ENTITY>) -> Unit
-    ) {
-        insertEntity(entity)
-    }
 }

@@ -8,7 +8,10 @@ import com.wesam.marvel.model.network.response.character.CharacterDto
 import kotlinx.coroutines.flow.Flow
 
 interface MarvelRepository {
-    fun searchForCharacter(name: String): Flow<List<Character?>>
-
+    suspend fun searchForCharacter(name: String): Flow<State<List<Character>?>>
+     suspend fun <ENTITY> insertEntityIntoDatabase(
+        entity: List<ENTITY>?,
+        daoInsertFunction: suspend (List<ENTITY?>) -> Unit,
+    )
 
 }

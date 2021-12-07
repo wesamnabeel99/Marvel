@@ -20,7 +20,7 @@ class SearchViewModel @Inject constructor(
     private val repository: MarvelRepository
 ) : BaseViewModel(),
     HomeInteractionListener {
-    val testLiveData = MutableLiveData<State<List<Character>>?>()
+    val testLiveData = MutableLiveData<State<List<Character>?>>()
     val searchText = MutableLiveData<String>()
 
 

@@ -36,9 +36,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:showWhenSuccess="@{viewModel.testLiveData}"
             app:layout_constraintTop_toBottomOf="@+id/editText"
             tools:listitem="@layout/item_character" />
 
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:showWhenLoading="@{viewModel.testLiveData}"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="#ff0000"
+            app:showWhenError="@{viewModel.testLiveData}"/>
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"

@@ -12,30 +12,20 @@ class Mapper @Inject constructor(
 ) {
     fun <I, ENTITY> mapToEntity(
         list: List<I>,
-        function: (input: I) -> ENTITY
+        mapperFunction: (I) -> ENTITY
     ): List<ENTITY> {
         return list.map {
-            function(it)
+            mapperFunction(it)
         }
     }
 
-    fun <I, DOMAIN> mapToDomain(
-        list: List<I>,
-        mapFunction: (input: I) -> DOMAIN
+    fun <DTO, DOMAIN> mapToDomain(
+        list: List<DTO>,
+        mapFunction: (DTO) -> DOMAIN
     ): List<DOMAIN> {
         return list.map {
             mapFunction(it)
         }
     }
 
-    fun <DTO, ENTITY> mapResponseToEntity(
-        response: List<DTO>?,
-        mappingFunction: (input: DTO) -> ENTITY
-    ): List<ENTITY>? {
-        return response?.let { dtoList ->
-            mapToEntity(list = dtoList) {
-                mappingFunction(it)
-            }
-        }
-    }
 }
