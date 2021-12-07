@@ -24,7 +24,11 @@ class SearchViewModel @Inject constructor(
 
 
     fun getData(name: String) {
-
+        viewModelScope.launch {
+            repository.searchForCharacter(name).collect {
+                Log.i("TEST",it.toString())
+            }
+        }
     }
 
 

@@ -18,7 +18,6 @@ class HomeViewModel @Inject constructor(
 
     fun getData() {
 
-
     }
 
     override fun onCharacterClicked() {

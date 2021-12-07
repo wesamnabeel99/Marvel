@@ -1,5 +1,6 @@
 package com.wesam.marvel.model.repositories
 
+import android.util.Log
 import com.wesam.marvel.model.domain.mapper.base.Mapper
 import com.wesam.marvel.model.local.database.MarvelDao
 import com.wesam.marvel.model.local.entities.CharacterEntity
@@ -21,19 +22,41 @@ class MarvelRepositoryImpl @Inject constructor(
     override suspend fun searchForCharacter(name: String): Flow<List<CharacterEntity>?> {
         return flow {
             handleResponse { apiService.searchForCharacter(name) }.collect { state ->
+                Log.i("TEST","I'm here")
                 if (state is State.Success) {
+                    Log.i("TEST","successful request for $name")
+                    val entity = state.toData()?.data?.results?.let { dtoList ->
+                        Log.i("TEST","mapping $dtoList")
 
-                    val entity = state.toData()?.data?.results?.map {
-                        mapper.characterDtoToEntity.map(it)
+                        mapToEntity(
+                            list = dtoList
+                        ) {
+                            mapper.characterDtoToEntity.map(it)
+                        }
+
                     }
+
 
                     entity?.let { e ->
                         cacheEntity(e) {
                             characterDao.insertCharacter(e)
                         }
+                        Log.i("TEST","cached $e")
+
                     }
+                } else {
+                    Log.i("TEST","not successful")
                 }
             }
+        }
+    }
+
+    private fun <I, ENTITY> mapToEntity(
+        list: List<I>,
+        function: (input: I) -> ENTITY
+    ): List<ENTITY> {
+        return list.map {
+            function(it)
         }
     }
 
@@ -42,15 +65,6 @@ class MarvelRepositoryImpl @Inject constructor(
         insertEntity: suspend (c: List<T>) -> Unit
     ) {
         insertEntity(entity)
-    }
-
-    private fun <T, E> mapToEntity(
-        list: List<T>,
-        function: () -> E
-    ): List<E> {
-        return list.map {
-            function()
-        }
     }
 
 
@@ -76,6 +90,6 @@ class MarvelRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun <T> checkResponseBody(response: Response<T>) = response.body().toString() != ""
+    private fun <T> checkResponseBody(response: Response<T>) = response.body().toString() == ""
 
 }
