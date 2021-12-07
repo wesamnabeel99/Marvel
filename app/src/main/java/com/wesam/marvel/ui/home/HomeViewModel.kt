@@ -15,20 +15,9 @@ class HomeViewModel @Inject constructor(
     HomeInteractionListener {
     val testLiveData = MutableLiveData<List<Character>>()
 
-    init {
-        viewModelScope.launch {
-            getData()
-            if (testLiveData.value == null) {
-                repository.refreshCharacters()
-                getData()
-            }
-        }
-    }
 
     fun getData() {
-        viewModelScope.launch {
-            testLiveData.postValue(repository.getCharacters())
-        }
+
 
     }
 

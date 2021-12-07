@@ -5,6 +5,9 @@ import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.local.database.MarvelDao
 import com.wesam.marvel.model.local.entities.SearchResultEntity
 import com.wesam.marvel.model.network.MarvelService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class MarvelRepositoryImpl @Inject constructor(
@@ -13,17 +16,21 @@ class MarvelRepositoryImpl @Inject constructor(
     private val characterDao: MarvelDao,
 ) : MarvelRepository {
 
-    override suspend fun getCharacters(): List<Character> {
-        return characterDao.getCharacter().map {
-            mapper.mapEntityToDomain(it)
+    override fun searchForCharacterByNameInDatabase(name: String): Flow<List<Character>> {
+        return flow {
+            characterDao.searchForCharacterByNameInDatabase(name).collect {
+                emit(it.map {
+                    mapper.mapEntityToDomain(it)
+                })
+            }
         }
     }
 
 
-    override suspend fun refreshCharacters() {
+    override suspend fun searchForCharacter(name: String) {
         try {
 
-            val character = apiService.getCharacters()
+            val character = apiService.searchForCharacter(name)
                 .body()?.data?.results?.map {
                     mapper.mapDtoToEntity(it)
                 }
@@ -37,33 +44,5 @@ class MarvelRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun searchForCharacter(name: String) {
-        try {
-            val response = apiService.searchForCharacter(name).body()?.data?.results
-            val searchResult = response?.map {
-                SearchResultEntity(name, it.id!!.toLong())
-            }
-            val characters = response?.map {
-                mapper.mapDtoToEntity(it)
-            }
-            characters?.let {
-                characterDao.insertCharacter(it)
-            }
-
-            searchResult?.let {
-                characterDao.insertSearchResult(it)
-            }
-        } catch (throwable: Throwable) {
-
-        }
-    }
-
-    override suspend fun getResultsFromDatabase(): List<Character> {
-        return characterDao.getSearchResults().map {
-            return characterDao.getCharacterById(it.resultId).map {
-                mapper.mapEntityToDomain(it)
-            }
-        }
-    }
 
 }

@@ -15,6 +15,6 @@ class HomeRecyclerAdapter(
         newItemPosition: Int,
         newItems: List<T>
     ): Boolean {
-    return true
+    return false
     }
 }
