@@ -16,51 +16,70 @@
 
         <EditText
             android:id="@+id/editText"
+            style="@style/SearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:focusable="true"
+            android:focusedByDefault="true"
+            android:hint="@string/search_for_character"
+            android:importantForAutofill="no"
+            android:inputType="textAutoCorrect"
+            android:keyboardNavigationCluster="true"
             android:text="@={viewModel.searchText}"
-            android:hint="search for character ..."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="LabelFor"
+            tools:targetApi="o" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="16dp"
             android:orientation="vertical"
             app:items="@{viewModel.testLiveData.toData()}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:showWhenSuccess="@{viewModel.testLiveData}"
             app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:showWhenSuccess="@{viewModel.testLiveData}"
             tools:listitem="@layout/item_character" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/search"
+            app:showWhenEmpty="@{viewModel.testLiveData}" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationViewError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:layout_constraintVertical_bias="0.0"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/error"
+            app:showWhenError="@{viewModel.testLiveData}" />
 
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:showWhenLoading="@{viewModel.testLiveData}"
-            tools:visibility="gone"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="#ff0000"
-            app:showWhenError="@{viewModel.testLiveData}"
-            tools:visibility="gone"/>
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:onClick="@{(v) -> viewModel.getData(editText.text.toString())}"
-            android:text="search"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler" />
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

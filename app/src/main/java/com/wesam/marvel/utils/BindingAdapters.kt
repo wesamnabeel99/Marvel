@@ -1,6 +1,8 @@
 package com.wesam.marvel.utils
 
+import android.view.KeyEvent
 import android.view.View
+import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wesam.marvel.model.network.State
@@ -20,6 +22,18 @@ fun <T> showWhenError(view: View, state: State<T>?) {
 fun <T> showWhenSuccess(view: View, state: State<T>?) {
     view.handleSuccessState(state)
 }
+
+@BindingAdapter(value = ["app:showWhenEmpty"])
+fun <T> showWhenEmpty(view: View, state: State<T>?) {
+    view.handleEmptyState(state)
+}
+
+@BindingAdapter(value = ["app:operateSearch"])
+fun <T> operateSearch(view: EditText, flag: (String) -> Void) {
+
+}
+
+fun KeyEvent?.isKeyPressed() = this?.keyCode != null && this.keyCode == KeyEvent.KEYCODE_ENTER
 
 @BindingAdapter(value = ["app:items"])
 fun <T> setRecyclerItems(view: RecyclerView, items: List<T>?) {

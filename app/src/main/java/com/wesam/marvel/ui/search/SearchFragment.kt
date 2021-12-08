@@ -2,10 +2,12 @@ package com.wesam.marvel.ui.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import com.wesam.marvel.R
 import com.wesam.marvel.databinding.FragmentSearchBinding
 import com.wesam.marvel.ui.base.BaseFragment
 import com.wesam.marvel.ui.home.HomeRecyclerAdapter
+import com.wesam.marvel.utils.isKeyPressed
 
 class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
     override val layoutId = R.layout.fragment_search
@@ -16,8 +18,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         binding.recycler.adapter = HomeRecyclerAdapter(
             viewModel.testLiveData.value?.toData() ?: emptyList(), viewModel
         )
-        binding.button.setOnClickListener {
-            viewModel.getData(name = binding.editText.text.toString())
+
+        binding.apply {
+            editText.setOnKeyListener { _, _, keyEvent ->
+                if (keyEvent.isKeyPressed()) {
+                    viewModel?.getData(editText.text.toString())
+                }
+                false
+            }
         }
+
+
     }
 }

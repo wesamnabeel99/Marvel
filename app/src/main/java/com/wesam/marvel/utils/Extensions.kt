@@ -27,6 +27,11 @@ fun <T> View.handleSuccessState(state: State<T>?) = if (state is State.Success) 
     this.visibility = View.GONE
 }
 
+fun <T> View.handleEmptyState(state: State<T>?) = if (state is State.Empty) {
+    this.visibility = View.VISIBLE
+} else {
+    this.visibility = View.GONE
+}
 
 fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")

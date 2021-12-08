@@ -11,6 +11,7 @@ import com.wesam.marvel.model.network.response.character.CharacterDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 import javax.inject.Inject
 
 class MarvelRepositoryImpl @Inject constructor(
@@ -19,55 +20,64 @@ class MarvelRepositoryImpl @Inject constructor(
     private val characterDao: MarvelDao,
 ) : MarvelRepository {
 
-    override suspend fun searchForCharacter(
+    override fun searchForCharacter(
         name: String,
     ): Flow<State<List<Character>?>> {
+
         return flow {
-            StateHandler.handleRequestState { apiService.searchForCharacter(name) }
-                .collect { responseBody ->
-                    when (responseBody) {
-                        is State.Success -> {
-                            emit(State.Success(getCharacterDomain(responseBody)))
+            emit(State.Loading)
+            characterDao.searchForCharacterByNameInDatabase(name)
+                .collect { cachedData ->
+
+                    if (cachedData.isEmpty()) {
+                        try {
+                            val response = apiService.searchForCharacter(name)
+
+                            val isResponseEmpty = checkResponseBody(response)
+                            if (isResponseEmpty) {
+                                emit(State.Error("EMPTY JSON BODY DUE TO BUG IN API"))
+                                return@collect
+                            }
+
+                            cacheCharacterResponse(response)
+                            val domain = cachedData.map {
+                                mapper.characterEntityToDomain.map(it)
+                            }
+                            emit(State.Success(domain))
+
+
+                        } catch (throwable: Throwable) {
+                            emit(State.Error(throwable.message.toString()))
                         }
-                        is State.Error -> {
-                            emit(State.Error(responseBody.toString()))
+
+                    } else {
+                        val domain = cachedData.map {
+                            mapper.characterEntityToDomain.map(it)
                         }
-                        else -> {
-                            emit(State.Loading)
-                        }
+                        emit(State.Success(domain))
                     }
+
                 }
         }
     }
 
-    private suspend fun getCharacterDomain(responseBody: State<BaseResponse<CharacterDto>?>): List<Character>? {
-        val entity: List<CharacterEntity>? =
-            responseBody.toData()?.data?.results?.map { dto ->
-                    mapper.characterDtoToEntity.map(dto)
-            }
+
+    private suspend fun cacheCharacterResponse(dto: Response<BaseResponse<CharacterDto>?>) {
+        val entity: List<CharacterEntity>? = dto.body()?.data?.results?.map {
+            mapper.characterDtoToEntity.map(it)
+        }
 
         entity?.let {
-            insertEntityIntoDatabase(
-                entity
-            ) { characterDao.insertCharacter(entity) }
-        }
-
-        return entity?.let { list ->
-            mapper.mapToDomain(list) {
-                mapper.characterEntityToDomain.map(it)
-            }
+            characterDao.insertCharacter(it)
         }
     }
 
+    override fun <T> checkResponseBody(response: Response<T>) = response.body().toString() == ""
 
-    override suspend fun <ENTITY> insertEntityIntoDatabase(
-        entity: List<ENTITY>?,
-        daoInsertFunction: suspend (List<ENTITY?>) -> Unit,
-    ) {
-
-        entity?.let { entityList ->
-            daoInsertFunction(entityList)
-        }
-    }
 
 }
+
+
+
+
+
