@@ -43,12 +43,14 @@
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:showWhenLoading="@{viewModel.testLiveData}"/>
+            app:showWhenLoading="@{viewModel.testLiveData}"
+            tools:visibility="gone"/>
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="#ff0000"
-            app:showWhenError="@{viewModel.testLiveData}"/>
+            app:showWhenError="@{viewModel.testLiveData}"
+            tools:visibility="gone"/>
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"

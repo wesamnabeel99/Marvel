@@ -42,10 +42,8 @@ class MarvelRepositoryImpl @Inject constructor(
 
     private suspend fun getCharacterDomain(responseBody: State<BaseResponse<CharacterDto>?>): List<Character>? {
         val entity: List<CharacterEntity>? =
-            responseBody.toData()?.data?.results?.let { list ->
-                mapper.mapToEntity(list) { dto ->
+            responseBody.toData()?.data?.results?.map { dto ->
                     mapper.characterDtoToEntity.map(dto)
-                }
             }
 
         entity?.let {

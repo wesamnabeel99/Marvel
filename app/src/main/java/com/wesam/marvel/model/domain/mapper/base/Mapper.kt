@@ -10,14 +10,7 @@ class Mapper @Inject constructor(
     val characterDtoToEntity: CharacterDtoToEntity,
     val characterEntityToDomain: CharacterEntityToDomain
 ) {
-    fun <I, ENTITY> mapToEntity(
-        list: List<I>,
-        mapperFunction: (I) -> ENTITY
-    ): List<ENTITY> {
-        return list.map {
-            mapperFunction(it)
-        }
-    }
+
 
     fun <DTO, DOMAIN> mapToDomain(
         list: List<DTO>,
