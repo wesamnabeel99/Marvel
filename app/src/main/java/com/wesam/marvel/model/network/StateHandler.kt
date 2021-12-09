@@ -6,17 +6,18 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
 object StateHandler {
-    suspend fun <T> wrapWithFlow(request: suspend () -> Response<BaseResponse<T>?>): Flow<Response<BaseResponse<T>?>> {
+    suspend fun <T> wrapWithFlow(request: suspend () -> Response<BaseResponse<T>?>): Flow<Response<BaseResponse<T>?>?> {
         return flow {
 
             try {
                 val response = request()
                 if (response.isSuccessful) {
-                    State.Success(response).toData()?.let { emit(it) }
+                    emit(response)
                 } else {
-                    Log.i("RESPONSE", "${response.message()}")
+                    emit(null)
                 }
             } catch (throwable: Throwable) {
+                emit(null)
                 Log.i("RESPONSE", "${throwable.message}")
             }
 

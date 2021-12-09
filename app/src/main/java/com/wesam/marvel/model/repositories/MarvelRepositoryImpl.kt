@@ -32,7 +32,7 @@ class MarvelRepositoryImpl @Inject constructor(
                     if (cachedData.isEmpty()) {
                         StateHandler.wrapWithFlow { apiService.searchForCharacter(name) }
                             .collect { response ->
-                                if (response.isSuccessful) {
+                                if (response != null) {
                                     cacheCharacterResponse(response)
                                     characterDao.searchForCharacterByNameInDatabase(name).collect {
                                         val domain = it.map {
@@ -41,7 +41,7 @@ class MarvelRepositoryImpl @Inject constructor(
                                         emit(State.Success(domain))
                                     }
                                 } else {
-                                    emit(State.Error(response.message()))
+                                    emit(State.Error("ERROR OCCURED"))
                                 }
 
                             }
