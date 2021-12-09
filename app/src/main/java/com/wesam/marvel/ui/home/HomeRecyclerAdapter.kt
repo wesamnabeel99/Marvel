@@ -7,7 +7,7 @@ import com.wesam.marvel.ui.base.BaseRecyclerAdapter
 class HomeRecyclerAdapter(
     list: List<Character>,
     listener: HomeInteractionListener
-) : BaseRecyclerAdapter<Character>(list,listener) {
+) : BaseRecyclerAdapter<Character>(list, listener) {
     override val layoutId = R.layout.item_character
 
     override fun <T> areItemsTheSame(
@@ -15,7 +15,7 @@ class HomeRecyclerAdapter(
         newItemPosition: Int,
         newItems: List<T>
     ): Boolean {
-    return newItems[oldItemPosition] != newItems[newItemPosition]
+        return (newItems[newItemPosition] as Character).id == (newItems[oldItemPosition] as Character).id
     }
 }
 

@@ -1,5 +1,6 @@
 package com.wesam.marvel.utils
 
+import android.view.KeyEvent
 import android.view.View
 import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.State
@@ -37,4 +38,6 @@ fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")
     return BigInteger(1, md.digest(this.toByteArray())).toString(16).padStart(32, '0')
 }
+
+fun KeyEvent?.isKeyPressed() = this?.keyCode != null && this.keyCode == KeyEvent.KEYCODE_ENTER
 

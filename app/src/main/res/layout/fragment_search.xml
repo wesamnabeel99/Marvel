@@ -37,14 +37,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            app:items="@{viewModel.testLiveData.toData()}"
+            app:items="@{viewModel.searchResults.toData()}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText"
-            app:showWhenSuccess="@{viewModel.testLiveData}"
+            app:showWhenSuccess="@{viewModel.searchResults}"
             tools:listitem="@layout/item_character" />
 
         <com.airbnb.lottie.LottieAnimationView
@@ -58,7 +58,7 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/search"
-            app:showWhenEmpty="@{viewModel.testLiveData}" />
+            app:showWhenEmpty="@{viewModel.searchResults}" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieAnimationViewError"
@@ -73,12 +73,12 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/error"
-            app:showWhenError="@{viewModel.testLiveData}" />
+            app:showWhenError="@{viewModel.searchResults}" />
 
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:showWhenLoading="@{viewModel.testLiveData}"
+            app:showWhenLoading="@{viewModel.searchResults}"
             tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

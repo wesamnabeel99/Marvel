@@ -9,7 +9,7 @@
             type="com.wesam.marvel.model.domain.models.Character" />
         <variable
             name="listener"
-            type="com.wesam.marvel.ui.home.HomeInteractionListener" />
+            type="com.wesam.marvel.ui.base.BaseInteractionListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

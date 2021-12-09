@@ -30,25 +30,21 @@ class MarvelRepositoryImpl @Inject constructor(
                 .collect { cachedData ->
 
                     if (cachedData.isEmpty()) {
-                        try {
-                            val response = apiService.searchForCharacter(name)
+                        StateHandler.wrapWithFlow { apiService.searchForCharacter(name) }
+                            .collect { response ->
+                                if (response.isSuccessful) {
+                                    cacheCharacterResponse(response)
+                                    characterDao.searchForCharacterByNameInDatabase(name).collect {
+                                        val domain = it.map {
+                                            mapper.characterEntityToDomain.map(it)
+                                        }
+                                        emit(State.Success(domain))
+                                    }
+                                } else {
+                                    emit(State.Error(response.message()))
+                                }
 
-                            val isResponseEmpty = checkResponseBody(response)
-                            if (isResponseEmpty) {
-                                emit(State.Error("EMPTY JSON BODY DUE TO BUG IN API"))
-                                return@collect
                             }
-
-                            cacheCharacterResponse(response)
-                            val domain = cachedData.map {
-                                mapper.characterEntityToDomain.map(it)
-                            }
-                            emit(State.Success(domain))
-
-
-                        } catch (throwable: Throwable) {
-                            emit(State.Error(throwable.message.toString()))
-                        }
 
                     } else {
                         val domain = cachedData.map {
@@ -56,7 +52,6 @@ class MarvelRepositoryImpl @Inject constructor(
                         }
                         emit(State.Success(domain))
                     }
-
                 }
         }
     }
@@ -66,13 +61,10 @@ class MarvelRepositoryImpl @Inject constructor(
         val entity: List<CharacterEntity>? = dto.body()?.data?.results?.map {
             mapper.characterDtoToEntity.map(it)
         }
-
         entity?.let {
             characterDao.insertCharacter(it)
         }
     }
-
-    override fun <T> checkResponseBody(response: Response<T>) = response.body().toString() == ""
 
 
 }

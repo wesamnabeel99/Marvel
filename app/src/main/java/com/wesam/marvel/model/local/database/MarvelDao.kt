@@ -18,7 +18,7 @@ interface MarvelDao {
     @Query("SELECT * FROM CHARACTER_TABLE")
     suspend fun getCharacter(): List<CharacterEntity>
 
-    @Query("SELECT * FROM CHARACTER_TABLE WHERE name = :name")
+    @Query("SELECT * FROM CHARACTER_TABLE WHERE name = :name ORDER BY name")
     fun searchForCharacterByNameInDatabase(name: String): Flow<List<CharacterEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

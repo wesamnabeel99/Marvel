@@ -12,5 +12,4 @@ interface MarvelRepository {
     fun searchForCharacter(name: String): Flow<State<List<Character>?>>
 
 
-    fun <T> checkResponseBody(response: Response<T>): Boolean
 }
