@@ -38,7 +38,7 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:src="@drawable/shadow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageView"

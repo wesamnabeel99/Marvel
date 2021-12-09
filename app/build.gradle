@@ -121,5 +121,8 @@ dependencies {
     def coil_version ="1.4.0"
     implementation "io.coil-kt:coil:$coil_version"
 
+    implementation  'io.ak1:bubbletabbar:1.0.8'
+
+
 
 }
