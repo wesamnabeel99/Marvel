@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/bk/Marvel/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.18385416666666668" />
+        <entry key="..\:/bk/Marvel/app/src/main/res/drawable/shadow.xml" value="0.178125" />
         <entry key="..\:/bk/Marvel/app/src/main/res/drawable/shape_search.xml" value="0.2557291666666667" />
         <entry key="..\:/bk/Marvel/app/src/main/res/layout/activity_main.xml" value="0.1140625" />
         <entry key="..\:/bk/Marvel/app/src/main/res/layout/fragment_home.xml" value="0.1140625" />
-        <entry key="..\:/bk/Marvel/app/src/main/res/layout/fragment_search.xml" value="0.25" />
-        <entry key="..\:/bk/Marvel/app/src/main/res/layout/item_character.xml" value="0.22" />
+        <entry key="..\:/bk/Marvel/app/src/main/res/layout/fragment_search.xml" value="0.2" />
+        <entry key="..\:/bk/Marvel/app/src/main/res/layout/item_character.xml" value="0.2" />
       </map>
     </option>
   </component>

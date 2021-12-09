@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.wesam.marvel.model.domain.models.Character
 import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.local.entities.SearchResultEntity
 import kotlinx.coroutines.flow.Flow

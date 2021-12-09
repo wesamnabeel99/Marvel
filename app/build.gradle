@@ -117,5 +117,9 @@ dependencies {
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     kaptTest "com.google.dagger:hilt-compiler:$hilt_version"
 
+    //Coil
+    def coil_version ="1.4.0"
+    implementation "io.coil-kt:coil:$coil_version"
+
 
 }

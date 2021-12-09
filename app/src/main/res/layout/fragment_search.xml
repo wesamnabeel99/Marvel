@@ -12,11 +12,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background_500">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editText"
             style="@style/SearchBar"
+            android:textColor="#DCDCDC"
+            android:textColorHint="#CCCCCC"
+            android:drawableTint="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true"
@@ -24,6 +28,7 @@
             android:hint="@string/search_for_character"
             android:importantForAutofill="no"
             android:inputType="textAutoCorrect"
+            android:imeOptions="actionSearch"
             android:keyboardNavigationCluster="true"
             android:text="@={viewModel.searchText}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,15 +39,15 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:orientation="vertical"
+            android:layout_marginVertical="16dp"
+            android:orientation="horizontal"
             app:items="@{viewModel.searchResults.toData()}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editText"
+            app:layout_constraintStart_toStartOf="@+id/editText"
             app:layout_constraintTop_toBottomOf="@+id/editText"
             app:showWhenSuccess="@{viewModel.searchResults}"
             tools:listitem="@layout/item_character" />
@@ -65,9 +70,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editText"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/editText"
             app:layout_constraintTop_toBottomOf="@+id/editText"
             app:layout_constraintVertical_bias="0.0"
             app:lottie_autoPlay="true"
@@ -75,11 +80,35 @@
             app:lottie_rawRes="@raw/error"
             app:showWhenError="@{viewModel.searchResults}" />
 
-        <ProgressBar
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationViewLoading"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:showWhenLoading="@{viewModel.searchResults}"
-            tools:visibility="gone" />
+            android:layout_height="0dp"
+            android:padding="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editText"
+            app:layout_constraintStart_toStartOf="@+id/editText"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:layout_constraintVertical_bias="0.0"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/marvel_loading"
+            app:showWhenLoading="@{viewModel.searchResults}" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationViewEmptyList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editText"
+            app:layout_constraintStart_toStartOf="@+id/editText"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:layout_constraintVertical_bias="0.0"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/empty_results"
+            app:showWhenListIsEmpty="@{viewModel.searchResults}"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

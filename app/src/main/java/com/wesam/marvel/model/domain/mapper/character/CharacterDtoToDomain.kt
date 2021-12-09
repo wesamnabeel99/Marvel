@@ -11,6 +11,7 @@ class CharacterDtoToDomain @Inject constructor() : BaseMapper<CharacterDto, Char
             id = input.id ?: 0,
             name = input.name ?: "",
             imageUrl = "${input.thumbnail?.path}.${input.thumbnail?.extension}",
+            description = input.description ?:"",
         )
     }
 }

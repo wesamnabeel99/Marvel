@@ -22,9 +22,11 @@ class SearchViewModel @Inject constructor(
 
     fun search(name: String?) {
         viewModelScope.launch {
-            name?.let {
-                repository.searchForCharacter(it.toString()).collect {
-                    searchResults.postValue(it)
+            name?.let { name ->
+                if (name.isNotEmpty()) {
+                    repository.searchForCharacter(name).collect { searchResult ->
+                        searchResults.postValue(searchResult)
+                    }
                 }
 
             }

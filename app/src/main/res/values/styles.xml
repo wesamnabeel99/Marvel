@@ -4,9 +4,14 @@
     <style name="SearchBar">
         <item name="android:padding">12dp</item>
         <item name="android:layout_marginVertical" tools:targetApi="o">8dp</item>
-        <item name="android:layout_marginHorizontal" tools:targetApi="o">12dp</item>
+        <item name="android:layout_marginHorizontal" tools:targetApi="o">16dp</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:drawableStart">@drawable/ic_baseline_search_24</item>
         <item name="android:background">@drawable/shape_search</item>
+    </style>
+
+    <style name="circleImageView" >
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">2%</item>
     </style>
 </resources>

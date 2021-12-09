@@ -11,6 +11,7 @@ class CharacterEntityToDomain @Inject constructor() : BaseMapper<CharacterEntity
             id = input.id,
             name = input.name,
             imageUrl = input.imageUrl,
+            description = input.description
         )
     }
 }
