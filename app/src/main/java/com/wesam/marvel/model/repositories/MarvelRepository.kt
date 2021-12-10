@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 interface MarvelRepository {
-    fun searchForCharacter(name: String): Flow<State<List<Character>?>>
 
 
 }

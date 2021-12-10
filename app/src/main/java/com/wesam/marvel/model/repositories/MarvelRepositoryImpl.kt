@@ -6,6 +6,7 @@ import com.wesam.marvel.model.local.database.MarvelDao
 import com.wesam.marvel.model.local.entities.CharacterEntity
 import com.wesam.marvel.model.network.MarvelService
 import com.wesam.marvel.model.network.State
+import com.wesam.marvel.model.network.State.Error
 import com.wesam.marvel.model.network.response.base.BaseResponse
 import com.wesam.marvel.model.network.response.character.CharacterDto
 import kotlinx.coroutines.flow.Flow
@@ -20,53 +21,52 @@ class MarvelRepositoryImpl @Inject constructor(
     private val characterDao: MarvelDao,
 ) : MarvelRepository {
 
-    override fun searchForCharacter(
-        name: String,
-    ): Flow<State<List<Character>?>> {
 
+    suspend fun <T> getCharacter(): Flow<State<List<Character>?>> {
         return flow {
-            emit(State.Loading)
-            characterDao.searchForCharacterByNameInDatabase(name)
-                .collect { cachedData ->
+            makeRequest { apiService.getCharacters() }.collect { responseState ->
+                when (responseState) {
+                    is State.Success -> {
 
-                    if (cachedData.isEmpty()) {
-                        StateHandler.wrapWithFlow { apiService.searchForCharacter(name) }
-                            .collect { responseState ->
-                                when (responseState) {
-                                    is State.Success -> {
-                                        cacheCharacterResponse(responseState.toData())
-                                        characterDao.searchForCharacterByNameInDatabase(name)
-                                            .collect {
-                                                val domain = it.map {
-                                                    mapper.characterEntityToDomain.map(it)
-                                                }
-                                                emit(State.Success(domain))
-                                            }
-                                    }
-                                    is State.Error -> {
-                                        emit(State.Error(responseState.message))
-                                    }
-                                }
+                        val entityList = mapper.mapResponseToEntity(responseState.toData()?.body()?.data?.results) {
+                            mapper.characterDtoToEntity.map(it)
+                        }
 
-                            }
+                        cacheEntity(entityList = entityList) {
+                            characterDao.insertCharacter(it)
+                        }
 
-                    } else {
-                        val domain = cachedData.map {
+                        val characterEntities = characterDao.getCharacter()
+
+                        val domain = mapper.mapEntityToDomain(characterEntities) {
                             mapper.characterEntityToDomain.map(it)
                         }
+
                         emit(State.Success(domain))
                     }
+
+
+                    State.Empty -> emit(State.Empty)
+                    is Error -> emit(State.Error(responseState.message))
+                    State.Loading ->  emit(State.Loading)
                 }
+
+            }
         }
+
+    }
+
+    private suspend fun <T> makeRequest(requestFunction: suspend () -> Response<BaseResponse<T>?>): Flow<State<Response<BaseResponse<T>?>>> {
+        return StateHandler.wrapWithFlow { requestFunction() }
     }
 
 
-    private suspend fun cacheCharacterResponse(dto: Response<BaseResponse<CharacterDto>?>?) {
-        val entity: List<CharacterEntity>? = dto?.body()?.data?.results?.map {
-            mapper.characterDtoToEntity.map(it)
-        }
-        entity?.let {
-            characterDao.insertCharacter(it)
+    private suspend fun <E> cacheEntity(
+        entityList: List<E>?,
+        daoInsertFunction: suspend (List<E>) -> Unit
+    ) {
+        entityList?.let {
+            daoInsertFunction(it)
         }
     }
 
