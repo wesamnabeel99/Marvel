@@ -31,17 +31,21 @@ class MarvelRepositoryImpl @Inject constructor(
 
                     if (cachedData.isEmpty()) {
                         StateHandler.wrapWithFlow { apiService.searchForCharacter(name) }
-                            .collect { response ->
-                                if (response != null) {
-                                    cacheCharacterResponse(response)
-                                    characterDao.searchForCharacterByNameInDatabase(name).collect {
-                                        val domain = it.map {
-                                            mapper.characterEntityToDomain.map(it)
-                                        }
-                                        emit(State.Success(domain))
+                            .collect { responseState ->
+                                when (responseState) {
+                                    is State.Success -> {
+                                        cacheCharacterResponse(responseState.toData())
+                                        characterDao.searchForCharacterByNameInDatabase(name)
+                                            .collect {
+                                                val domain = it.map {
+                                                    mapper.characterEntityToDomain.map(it)
+                                                }
+                                                emit(State.Success(domain))
+                                            }
                                     }
-                                } else {
-                                    emit(State.Error("ERROR OCCURED"))
+                                    is State.Error -> {
+                                        emit(State.Error(responseState.message))
+                                    }
                                 }
 
                             }
@@ -57,8 +61,8 @@ class MarvelRepositoryImpl @Inject constructor(
     }
 
 
-    private suspend fun cacheCharacterResponse(dto: Response<BaseResponse<CharacterDto>?>) {
-        val entity: List<CharacterEntity>? = dto.body()?.data?.results?.map {
+    private suspend fun cacheCharacterResponse(dto: Response<BaseResponse<CharacterDto>?>?) {
+        val entity: List<CharacterEntity>? = dto?.body()?.data?.results?.map {
             mapper.characterDtoToEntity.map(it)
         }
         entity?.let {
