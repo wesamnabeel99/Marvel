@@ -23,52 +23,37 @@ class MarvelRepositoryImpl @Inject constructor(
     override fun searchForCharacter(
         name: String,
     ): Flow<State<List<Character>?>> {
-
         return flow {
             emit(State.Loading)
-            characterDao.searchForCharacterByNameInDatabase(name)
-                .collect { cachedData ->
-
-                    if (cachedData.isEmpty()) {
-                        StateHandler.wrapWithFlow { apiService.searchForCharacter(name) }
-                            .collect { response ->
-                                if (response != null) {
-                                    cacheCharacterResponse(response)
-                                    characterDao.searchForCharacterByNameInDatabase(name).collect {
-                                        val domain = it.map {
-                                            mapper.characterEntityToDomain.map(it)
-                                        }
-                                        emit(State.Success(domain))
+            characterDao.searchForCharacterByNameInDatabase(name).collect { cachedData ->
+                if (cachedData.isEmpty()) {
+                    StateHandler.wrapWithFlow { apiService.searchForCharacter(name) }
+                        .collect { response ->
+                            emit(State.Loading)
+                            if (response is State.Success) {
+                                val entity: List<CharacterEntity>? =
+                                    response.toData()?.body()?.data?.results?.map {
+                                        mapper.characterDtoToEntity.map(it)
                                     }
-                                } else {
-                                    emit(State.Error("ERROR OCCURED"))
+                                entity?.let {
+                                    characterDao.insertCharacter(it)
                                 }
-
+                            } else {
+                                response.toData()?.message()?.let { State.Error(it) }?.let { emit(it) }
                             }
-
-                    } else {
-                        val domain = cachedData.map {
-                            mapper.characterEntityToDomain.map(it)
                         }
-                        emit(State.Success(domain))
+                } else {
+                    val domain = cachedData.map {
+                        mapper.characterEntityToDomain.map(it)
                     }
+                    emit(State.Success(domain))
                 }
+            }
+
         }
+
     }
-
-
-    private suspend fun cacheCharacterResponse(dto: Response<BaseResponse<CharacterDto>?>) {
-        val entity: List<CharacterEntity>? = dto.body()?.data?.results?.map {
-            mapper.characterDtoToEntity.map(it)
-        }
-        entity?.let {
-            characterDao.insertCharacter(it)
-        }
-    }
-
-
 }
-
 
 
 
